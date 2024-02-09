@@ -1,0 +1,14 @@
+﻿<div class="my-4">
+    <div class="header">
+        <h3 class="title">Not Found :(</h3>
+    </div>
+
+    <h4>Could not find a zone that matches your search criteria <em>@Criteria</em></h4>
+
+    <p>Better if you try with a six alphanumeric code like <b>MIZ073</b></p>
+</div>
+
+@code {
+    [Parameter]
+    public string Criteria { get; set; } = string.Empty;
+}

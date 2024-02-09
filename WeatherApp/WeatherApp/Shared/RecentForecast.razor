@@ -1,0 +1,29 @@
+﻿<div class="highlight py-4">
+    <div class="data mx-2">
+        <h2 class="mt-3">@Item?.Name</h2>
+        <p class="mt-2">@Zone?.Properties?.Name, @Zone?.Properties?.State</p>
+    </div>
+    <div class="description">
+        <ul>
+            @foreach (var detail in details)
+            {
+                <li>@detail</li>
+            }
+        </ul>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public Forecast? Item { get; set; }
+    [Parameter]
+    public Zones? Zone { get; set; }
+
+    private IEnumerable<string> details = Enumerable.Empty<string>();
+
+    protected override void OnParametersSet()
+    {
+        details = Item?.DetailedForecast?.Split(". ") ?? details;
+        base.OnParametersSet();
+    }
+}

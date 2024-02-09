@@ -1,0 +1,77 @@
+﻿@page "/"
+@inject IForecastsViewModel viewModel
+
+<PageTitle>⛅ Weather Forecast</PageTitle>
+
+<div class="container">
+    <div class="header">
+        <h1>Weather forecast</h1>
+
+        <EditForm class="search-box" Model="@viewModel.search" OnValidSubmit="@handleSubmit" @onsubmit:preventDefault>
+            <InputText @bind-Value="viewModel.search.Criteria" />
+            <button class="btn-color" type="submit">Search</button>
+            <DataAnnotationsValidator />
+            <ValidationSummary class="validations"/>
+        </EditForm>
+    </div>
+
+    <div>
+        @if (viewModel.forecast != null && !viewModel.fetchError)
+        {
+            <RecentForecast Item="@viewModel.firstForecast" Zone="@viewModel.zone"/>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>When?</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var period in viewModel.forecast.Properties?.Periods ?? new List<Forecast>())
+                    {
+                        <tr id="@period.Number">
+                            <td>@period.Name</td>
+                            <td>@period.DetailedForecast</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <p class="update">Last updated at: @viewModel.forecast.Properties?.Updated.ToShortTimeString()</p>
+        }
+        else if (viewModel.fetchError)
+        {
+            <FetchZoneForecastError Criteria="@viewModel.search.Criteria" />
+        }
+        else
+        {
+            <p><em>Search the forecast of your zone!</em></p>
+        }
+    </div>
+</div>
+
+@code {
+    protected override async void OnInitialized()
+    {
+        viewModel.search.Criteria = "NYZ072";
+        await viewModel.FetchZones();
+        await viewModel.FetchForecast();
+        viewModel.search.Criteria = "";
+        StateHasChanged();
+        base.OnInitialized();
+    }
+
+    private async void handleSubmit()
+    {
+        try
+        {
+            viewModel.fetchError = false;
+            await viewModel.FetchForecast();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            viewModel.fetchError = true;
+            StateHasChanged();
+        }
+    }
+}

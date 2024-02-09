@@ -1,0 +1,70 @@
+﻿@page "/legacy"
+
+<PageTitle>⛅ Weather Forecast</PageTitle>
+
+<h1>Weather forecast</h1>
+
+<p>This component demonstrates fetching data from the server.</p>
+
+<EditForm Model="@search" OnValidSubmit="@handleSubmit" @onsubmit:preventDefault>
+    <InputText @bind-Value="search.Criteria" />
+    <button type="submit">Search</button>
+    <DataAnnotationsValidator />
+</EditForm>
+
+<div>
+
+</div>
+
+@if (forecast != null && !fetchError)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>When?</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var period in forecast.Properties.Periods)
+            {
+                <tr id="@period.Number">
+                    <td>@period.Name</td>
+                    <td>@period.DetailedForecast</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p>Last updated at: @forecast.Properties.Updated.ToShortTimeString()</p>
+}
+else if (fetchError)
+{
+    <FetchZoneForecastError Criteria="@search.Criteria"/>
+}
+else
+{
+    <p><em>Search the forecast of your zone!</em></p>
+}
+
+@code {
+    private WeatherForecast? forecast;
+    private Search search = new();
+    private bool fetchError = false;
+
+    /// @ TODO
+    private async void handleSubmit()
+    {
+        try
+        {
+            fetchError = false;
+            forecast = new WeatherForecast();
+            StateHasChanged();
+        }
+        catch (Exception ex)
+        {
+            fetchError = true;
+            StateHasChanged();
+        }
+
+    }
+}

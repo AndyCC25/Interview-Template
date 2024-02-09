@@ -1,0 +1,27 @@
+﻿.highlight {
+    display: flex;
+    flex-direction: row;
+}
+
+.data {
+    display: flex;
+    flex-direction: column;
+    width: 20vw;
+    text-align: center;
+    justify-content: center;
+    background-image: linear-gradient(180deg, rgb(5, 39, 103) 0%, #3a0647 70%);
+    border-radius: 5px;
+    color: white;
+}
+
+.data > p {
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: lighter;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
